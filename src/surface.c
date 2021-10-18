@@ -70,11 +70,6 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 	bool found;
 	int rc;
 
-	if(surfaces_count > 32)
-	{
-		surfaces_count = 32;
-	}
-	
 	printf("libva-v4l2_request: RequestCreateSurfaces2()\r\n");
 	//////////// HACK: this portion of the code should get cleaned up.
 
@@ -176,8 +171,8 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 				       surface_object->destination_map_lengths,
 				       surface_object->destination_map_offsets,
 				       video_format->v4l2_buffers_count);
-		if (rc < 0)
-			return VA_STATUS_ERROR_ALLOCATION_FAILED;
+		//if (rc < 0)
+		//	return VA_STATUS_ERROR_ALLOCATION_FAILED;
 
 		printf("libva-v4l2_request: RequestCreateSurfaces2() query buffer ok\r\n");
 
@@ -189,8 +184,8 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 				     driver_data->video_fd,
 				     surface_object->destination_map_offsets[j]);
 
-			if (surface_object->destination_map[j] == MAP_FAILED)
-				return VA_STATUS_ERROR_ALLOCATION_FAILED;
+			//if (surface_object->destination_map[j] == MAP_FAILED)
+			//	return VA_STATUS_ERROR_ALLOCATION_FAILED;
 		}
 
 		/*
