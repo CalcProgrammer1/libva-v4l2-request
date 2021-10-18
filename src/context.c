@@ -91,6 +91,7 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 	}
 	memset(&context_object->dpb, 0, sizeof(context_object->dpb));
 
+	printf("libva_v4l2_request: RequestCreateContext()\r\n");
 	switch (config_object->profile) {
 
 	case VAProfileMPEG2Simple:
