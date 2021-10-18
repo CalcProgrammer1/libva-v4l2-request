@@ -137,10 +137,10 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 
 		source_data = mmap(NULL, length, PROT_READ | PROT_WRITE,
 				   MAP_SHARED, driver_data->video_fd, offset);
-		//if (source_data == MAP_FAILED) {
-		//	status = VA_STATUS_ERROR_ALLOCATION_FAILED;
-		//	goto error;
-		//}
+		if (source_data == MAP_FAILED) {
+			status = VA_STATUS_ERROR_ALLOCATION_FAILED;
+			goto error;
+		}
 
 		surface_object->source_index = index;
 		surface_object->source_data = source_data;
