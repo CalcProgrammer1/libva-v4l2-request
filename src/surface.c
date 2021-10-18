@@ -153,8 +153,10 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 
 	printf("libva-v4l2_request: RequestCreateSurfaces2() create buffers ok\r\n");
 
+
+	printf("libva-v4l2_request: RequestCreateSurfaces2() number of surfaces %d\r\n", surfaces_count);
 	for (i = 0; i < surfaces_count; i++) {
-		printf("libva-v4l2_request: RequestCreateSurfaces2() looping through surfaces\r\n");
+		printf("libva-v4l2_request: RequestCreateSurfaces2() looping through surfaces %d\r\n", i);
 		index = index_base + i;
 
 		id = object_heap_allocate(&driver_data->surface_heap);
