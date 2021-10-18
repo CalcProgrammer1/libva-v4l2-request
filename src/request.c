@@ -151,6 +151,7 @@ VAStatus VA_DRIVER_INIT_FUNC(VADriverContextP context)
 		video_path = "/dev/video0";
 
 	video_fd = open(video_path, O_RDWR | O_NONBLOCK);
+	printf("libva-v4l2-request: VA_DRIVER_INIT_FUNC() opened path %s, fd=%d\r\n",video_path, video_fd);
 	if (video_fd < 0)
 		return VA_STATUS_ERROR_OPERATION_FAILED;
 
@@ -186,6 +187,7 @@ error:
 	status = VA_STATUS_ERROR_OPERATION_FAILED;
 
 	if (video_fd >= 0)
+		printf("libva-v4l2-request: VA_DRIVER_INIT_FUNC() closing video fd %d\r\n", video_fd);
 		close(video_fd);
 
 	if (media_fd >= 0)
