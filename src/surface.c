@@ -167,8 +167,8 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 				       surface_object->destination_map_lengths,
 				       surface_object->destination_map_offsets,
 				       video_format->v4l2_buffers_count);
-		if (rc < 0)
-			return VA_STATUS_ERROR_ALLOCATION_FAILED;
+		//if (rc < 0)
+		//	return VA_STATUS_ERROR_ALLOCATION_FAILED;
 
 		for (j = 0; j < video_format->v4l2_buffers_count; j++) {
 			surface_object->destination_map[j] =
@@ -178,8 +178,8 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 				     driver_data->video_fd,
 				     surface_object->destination_map_offsets[j]);
 
-			if (surface_object->destination_map[j] == MAP_FAILED)
-				return VA_STATUS_ERROR_ALLOCATION_FAILED;
+			//if (surface_object->destination_map[j] == MAP_FAILED)
+			//	return VA_STATUS_ERROR_ALLOCATION_FAILED;
 		}
 
 		/*
