@@ -90,6 +90,7 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 		if (rc < 0) {
 			return VA_STATUS_ERROR_OPERATION_FAILED;
 		}
+		printf("libva-v4l2_request: RequestCreateSurfaces2() set format\r\n");
 
 		SET_FORMAT_OF_OUTPUT_ONCE = true;
 	}
@@ -99,31 +100,38 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 	if (format != VA_RT_FORMAT_YUV420)
 		return VA_STATUS_ERROR_UNSUPPORTED_RT_FORMAT;
 
-        if (!driver_data->video_format) {
+	printf("libva-v4l2_request: RequestCreateSurfaces2() rt format check ok\r\n");
+
+	if (!driver_data->video_format) {
+		printf("libva-v4l2_request: RequestCreateSurfaces2() no video format, finding\r\n");
+
 		found = v4l2_find_format(driver_data->video_fd,
-					 V4L2_BUF_TYPE_VIDEO_CAPTURE,
-					 V4L2_PIX_FMT_SUNXI_TILED_NV12);
+						V4L2_BUF_TYPE_VIDEO_CAPTURE,
+						V4L2_PIX_FMT_SUNXI_TILED_NV12);
 		if (found)
 			video_format = video_format_find(V4L2_PIX_FMT_SUNXI_TILED_NV12);
 
 		found = v4l2_find_format(driver_data->video_fd,
-					 V4L2_BUF_TYPE_VIDEO_CAPTURE,
-					 V4L2_PIX_FMT_NV12);
+						V4L2_BUF_TYPE_VIDEO_CAPTURE,
+						V4L2_PIX_FMT_NV12);
 		if (found)
 			video_format = video_format_find(V4L2_PIX_FMT_NV12);
 
 		if (video_format == NULL)
 			return VA_STATUS_ERROR_OPERATION_FAILED;
 
+		printf("libva-v4l2_request: RequestCreateSurfaces2() found fideo format\r\n");
+		
 		driver_data->video_format = video_format;
 
 		capture_type = v4l2_type_video_capture(video_format->v4l2_mplane);
 
 		rc = v4l2_set_format(driver_data->video_fd, capture_type,
-				     video_format->v4l2_format, width, height);
+						video_format->v4l2_format, width, height);
 		if (rc < 0)
 			return VA_STATUS_ERROR_OPERATION_FAILED;
-        } else {
+	} else {
+		printf("libva-v4l2_request: RequestCreateSurfaces2() video format already found\r\n");
 		video_format = driver_data->video_format;
 		capture_type = v4l2_type_video_capture(video_format->v4l2_mplane);
 	}
@@ -134,6 +142,8 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 	if (rc < 0)
 		return VA_STATUS_ERROR_OPERATION_FAILED;
 
+	printf("libva-v4l2_request: RequestCreateSurfaces2() get format ok\r\n");
+
 	destination_planes_count = video_format->planes_count;
 
 	rc = v4l2_create_buffers(driver_data->video_fd, capture_type,
@@ -141,7 +151,10 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 	if (rc < 0)
 		return VA_STATUS_ERROR_ALLOCATION_FAILED;
 
+	printf("libva-v4l2_request: RequestCreateSurfaces2() create buffers ok\r\n");
+
 	for (i = 0; i < surfaces_count; i++) {
+		printf("libva-v4l2_request: RequestCreateSurfaces2() looping through surfaces\r\n");
 		index = index_base + i;
 
 		id = object_heap_allocate(&driver_data->surface_heap);
@@ -231,6 +244,8 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 
 		surfaces_ids[i] = id;
 	}
+
+	printf("libva-v4l2_request: RequestCreateSurfaces2() success\r\n");
 
 	return VA_STATUS_SUCCESS;
 }
