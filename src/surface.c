@@ -70,6 +70,7 @@ VAStatus RequestCreateSurfaces2(VADriverContextP context, unsigned int format,
 	bool found;
 	int rc;
 
+	printf("libva-v4l2_request: RequestCreateSurfaces2()\r\n");
 	//////////// HACK: this portion of the code should get cleaned up.
 
 	// v4l2_set_format needs to be called BEFORE we create any buffers
