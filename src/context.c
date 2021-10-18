@@ -70,9 +70,13 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 	unsigned int i;
 	int rc;
 
+	printf("libva_v4l2_request: RequestCreateContext()\r\n");
+
 	video_format = driver_data->video_format;
 	if (video_format == NULL)
 		return VA_STATUS_ERROR_OPERATION_FAILED;
+
+	printf("libva_v4l2_request: RequestCreateContext() video format ok\r\n");
 
 	output_type = v4l2_type_video_output(video_format->v4l2_mplane);
 	capture_type = v4l2_type_video_capture(video_format->v4l2_mplane);
@@ -91,39 +95,7 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 	}
 	memset(&context_object->dpb, 0, sizeof(context_object->dpb));
 
-	printf("libva_v4l2_request: RequestCreateContext()\r\n");
-	switch (config_object->profile) {
-
-	case VAProfileMPEG2Simple:
-	case VAProfileMPEG2Main:
-		pixelformat = V4L2_PIX_FMT_MPEG2_SLICE;
-		break;
-
-	case VAProfileH264Main:
-	case VAProfileH264High:
-	case VAProfileH264ConstrainedBaseline:
-	case VAProfileH264MultiviewHigh:
-	case VAProfileH264StereoHigh:
-		pixelformat = V4L2_PIX_FMT_H264_SLICE;
-		/* Query decode mode and start code */
-		h264_get_controls(driver_data, context_object);
-		break;
-
-	case VAProfileHEVCMain:
-		pixelformat = V4L2_PIX_FMT_HEVC_SLICE;
-		break;
-
-	default:
-		status = VA_STATUS_ERROR_UNSUPPORTED_PROFILE;
-		goto error;
-	}
-
-	rc = v4l2_set_format(driver_data->video_fd, output_type, pixelformat,
-			     picture_width, picture_height);
-	//if (rc < 0) {
-	//	status = VA_STATUS_ERROR_OPERATION_FAILED;
-	//	goto error;
-	//}
+	printf("libva_v4l2_request: RequestCreateContext() heap allocate ok\r\n");
 
 	rc = v4l2_create_buffers(driver_data->video_fd, output_type,
 				 surfaces_count, &index_base);
@@ -131,6 +103,8 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 		status = VA_STATUS_ERROR_ALLOCATION_FAILED;
 		goto error;
 	}
+
+	printf("libva_v4l2_request: RequestCreateContext() create buffers ok\r\n");
 
 	/*
 	 * The surface_ids array has been allocated by the caller and
@@ -156,17 +130,17 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 
 		rc = v4l2_query_buffer(driver_data->video_fd, output_type,
 				       index, &length, &offset, 1);
-		if (rc < 0) {
-			status = VA_STATUS_ERROR_ALLOCATION_FAILED;
-			goto error;
-		}
+		//if (rc < 0) {
+		//	status = VA_STATUS_ERROR_ALLOCATION_FAILED;
+		//	goto error;
+		//}
 
 		source_data = mmap(NULL, length, PROT_READ | PROT_WRITE,
 				   MAP_SHARED, driver_data->video_fd, offset);
-		if (source_data == MAP_FAILED) {
-			status = VA_STATUS_ERROR_ALLOCATION_FAILED;
-			goto error;
-		}
+		//if (source_data == MAP_FAILED) {
+		//	status = VA_STATUS_ERROR_ALLOCATION_FAILED;
+		//	goto error;
+		//}
 
 		surface_object->source_index = index;
 		surface_object->source_data = source_data;
@@ -179,11 +153,15 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 		goto error;
 	}
 
+	printf("libva_v4l2_request: RequestCreateContext() set stream ok\r\n");
+
 	rc = v4l2_set_stream(driver_data->video_fd, capture_type, true);
 	if (rc < 0) {
 		status = VA_STATUS_ERROR_OPERATION_FAILED;
 		goto error;
 	}
+
+	printf("libva_v4l2_request: RequestCreateContext() set stream again ok\r\n");
 
 	context_object->config_id = config_id;
 	context_object->render_surface_id = VA_INVALID_ID;
@@ -194,6 +172,8 @@ VAStatus RequestCreateContext(VADriverContextP context, VAConfigID config_id,
 	context_object->flags = flags;
 
 	*context_id = id;
+
+	printf("libva_v4l2_request: RequestCreateContext() success\r\n");
 
 	status = VA_STATUS_SUCCESS;
 	goto complete;
