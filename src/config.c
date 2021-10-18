@@ -59,12 +59,14 @@ VAStatus RequestCreateConfig(VADriverContextP context, VAProfile profile,
 	case VAProfileH264ConstrainedBaseline:
 	case VAProfileH264MultiviewHigh:
 	case VAProfileH264StereoHigh:
+		printf("libva_v4l2_request: RequestCreateConfig() with H264 profile\r\n");
 		// FIXME
 		break;
 	case VAProfileMPEG2Simple:
 	case VAProfileMPEG2Main:
 	case VAProfileHEVCMain:
 	default:
+		printf("libva_v4l2_request: RequestCreateConfig() with unsupported profile\r\n");
 		return VA_STATUS_ERROR_UNSUPPORTED_PROFILE;
 	}
 
