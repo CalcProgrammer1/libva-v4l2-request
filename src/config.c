@@ -75,8 +75,10 @@ VAStatus RequestCreateConfig(VADriverContextP context, VAProfile profile,
 
 	id = object_heap_allocate(&driver_data->config_heap);
 	config_object = CONFIG(driver_data, id);
-	if (config_object == NULL)
+	if (config_object == NULL) {
+		printf("libva_v4l2_request: RequestCreateConfig() Allocation failed\r\n");
 		return VA_STATUS_ERROR_ALLOCATION_FAILED;
+	}
 
 	config_object->profile = profile;
 	config_object->entrypoint = entrypoint;
@@ -93,6 +95,7 @@ VAStatus RequestCreateConfig(VADriverContextP context, VAProfile profile,
 
 	*config_id = id;
 
+	printf("libva_v4.2_request: RequestCreateConfig() return success\r\n");
 	return VA_STATUS_SUCCESS;
 }
 
